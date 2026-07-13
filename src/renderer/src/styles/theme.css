@@ -1,0 +1,276 @@
+/* theme.css — Body Factory design system
+ *
+ * Single source of truth for design tokens, extracted from the Body Factory
+ * design file (tokens.css). Structure:
+ *   1. Runtime theme variables  — swappable at runtime via [data-theme] / [data-density]
+ *   2. Token layer (@theme)      — Tailwind v4 utilities generated from those variables
+ *   3. Base layer                — global background + typography defaults
+ *
+ * Tokens are named by ROLE (surface / text-primary / border-subtle), not by
+ * appearance, so a palette change never requires renaming utilities.
+ */
+
+@import 'tailwindcss';
+
+/* Make `dark:` / `light:` utilities key off our [data-theme] attribute rather
+   than the OS preference. Rarely needed — role-named tokens below already swap
+   automatically — but available for the odd theme-specific one-off. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+@custom-variant light (&:where([data-theme='light'], [data-theme='light'] *));
+
+/* ------------------------------------------------------------------ */
+/* 1. Runtime theme variables                                          */
+/*    Dark is the default (bare :root). Light + density are opt-in via */
+/*    data-attributes on <html>.                                       */
+/* ------------------------------------------------------------------ */
+:root {
+  /* Theme-agnostic tokens — identical in light & dark. */
+
+  /* Activity accents — defaults from the design's "electric" palette.
+     The app may override --bf-run/gym/floorball/misc at runtime (palettes). */
+  --bf-run: #c8ff3a;
+  --bf-gym: #ff6b2c;
+  --bf-floorball: #4e8fff;
+  --bf-misc: #c56be8;
+  /* Contextual accent — components set --accent in local scope (e.g. per
+     session type); utilities like bg-accent/text-accent follow it. */
+  --accent: var(--bf-run);
+
+  /* Status */
+  --bf-success: #34d399;
+  --bf-danger: #f87171;
+
+  /* Heart-rate zones (Z1–Z5) */
+  --bf-zone-1: #6b7280;
+  --bf-zone-2: #34d399;
+  --bf-zone-3: #fbbf24;
+  --bf-zone-4: #fb923c;
+  --bf-zone-5: #ef4444;
+
+  /* Integrations */
+  --bf-evolt: #6be0c8;
+  --bf-health: #ff6b8b;
+
+  /* Density rhythm — overridden by [data-density] below */
+  --bf-pad: 14px;
+  --bf-gutter: 10px;
+  --bf-chip-h: 26px;
+}
+
+/* Dark theme — the default (bare :root) and explicitly selectable via
+   [data-theme="dark"]. Values from the design's tokens.css dark palette. */
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --bf-bg: #0f0f0f;
+  --bf-bg-window: #171717;
+  --bf-bg-sidebar: #1c1c1c;
+  --bf-bg-card: #232323;
+  --bf-bg-card-2: #2b2b2b;
+  --bf-bg-hover: #333333;
+
+  /* Borders */
+  --bf-border: #353535;
+  --bf-border-strong: #454545;
+
+  /* Text */
+  --bf-text: #fafafa;
+  --bf-text-2: #a3a3a3;
+  --bf-text-3: #6b6b6b;
+  --bf-text-4: #404040;
+
+  /* Titlebar */
+  --bf-tb-bg: #1f1f1f;
+  --bf-tb-border: #383838;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bf-bg: #f5f5f4;
+  --bf-bg-window: #ffffff;
+  --bf-bg-sidebar: #fafaf9;
+  --bf-bg-card: #ffffff;
+  --bf-bg-card-2: #f5f5f4;
+  --bf-bg-hover: #ececeb;
+  --bf-border: #e7e5e4;
+  --bf-border-strong: #d6d3d1;
+  --bf-text: #0a0a0a;
+  --bf-text-2: #525252;
+  --bf-text-3: #737373;
+  --bf-text-4: #a3a3a3;
+  --bf-tb-bg: #f0eeec;
+  --bf-tb-border: #d6d3d1;
+}
+
+[data-density='compact'] {
+  --bf-pad: 10px;
+  --bf-gutter: 6px;
+  --bf-chip-h: 22px;
+}
+[data-density='comfy'] {
+  --bf-pad: 18px;
+  --bf-gutter: 14px;
+  --bf-chip-h: 30px;
+}
+
+/* ------------------------------------------------------------------ */
+/* 2a. Themeable tokens — mapped inline to the runtime vars above so    */
+/*     [data-theme] / [data-density] switching reaches the utilities.  */
+/* ------------------------------------------------------------------ */
+@theme inline {
+  /* Surfaces */
+  --color-surface: var(--bf-bg);
+  --color-surface-window: var(--bf-bg-window);
+  --color-surface-sidebar: var(--bf-bg-sidebar);
+  --color-surface-card: var(--bf-bg-card);
+  --color-surface-raised: var(--bf-bg-card-2);
+  --color-surface-hover: var(--bf-bg-hover);
+  --color-titlebar: var(--bf-tb-bg);
+
+  /* Borders */
+  --color-border-subtle: var(--bf-border);
+  --color-border-strong: var(--bf-border-strong);
+  --color-border-titlebar: var(--bf-tb-border);
+
+  /* Text */
+  --color-text-primary: var(--bf-text);
+  --color-text-secondary: var(--bf-text-2);
+  --color-text-tertiary: var(--bf-text-3);
+  --color-text-muted: var(--bf-text-4);
+
+  /* Status */
+  --color-success: var(--bf-success);
+  --color-danger: var(--bf-danger);
+
+  /* Activity accents */
+  --color-accent: var(--accent);
+  --color-run: var(--bf-run);
+  --color-gym: var(--bf-gym);
+  --color-floorball: var(--bf-floorball);
+  --color-misc: var(--bf-misc);
+
+  /* HR zones */
+  --color-zone-1: var(--bf-zone-1);
+  --color-zone-2: var(--bf-zone-2);
+  --color-zone-3: var(--bf-zone-3);
+  --color-zone-4: var(--bf-zone-4);
+  --color-zone-5: var(--bf-zone-5);
+
+  /* Integrations */
+  --color-evolt: var(--bf-evolt);
+  --color-health: var(--bf-health);
+
+  /* Density-aware spacing — p-pad / gap-gutter / h-chip follow [data-density] */
+  --spacing-pad: var(--bf-pad);
+  --spacing-gutter: var(--bf-gutter);
+  --spacing-chip: var(--bf-chip-h);
+}
+
+/* ------------------------------------------------------------------ */
+/* 2b. Static tokens — type scale, radii, shadows, breakpoints, etc.   */
+/* ------------------------------------------------------------------ */
+@theme {
+  /* Font families */
+  --font-sans: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Inter Tight', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Font weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Type scale — desktop px, consolidated from the design's steps.
+     Display sizes carry tight default line-heights. */
+  --text-3xs: 9px;
+  --text-2xs: 10px;
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-md: 14px;
+  --text-lg: 16px;
+  --text-xl: 22px;
+  --text-xl--line-height: 1.1;
+  --text-2xl: 26px;
+  --text-2xl--line-height: 1;
+  --text-3xl: 32px;
+  --text-3xl--line-height: 1.05;
+  --text-4xl: 36px;
+  --text-4xl--line-height: 1;
+  --text-5xl: 48px;
+  --text-5xl--line-height: 0.95;
+  --text-6xl: 64px;
+  --text-6xl--line-height: 0.95;
+
+  /* Letter spacing */
+  --tracking-tighter: -0.04em;
+  --tracking-tight: -0.02em;
+  --tracking-snug: -0.01em;
+  --tracking-normal: -0.005em;
+  --tracking-wide: 0.06em;
+  --tracking-wider: 0.1em;
+  --tracking-widest: 0.14em;
+
+  /* Border radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 14px;
+  --radius-card: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-window: 0 0 0 0.5px rgba(255, 255, 255, 0.06), 0 30px 80px rgba(0, 0, 0, 0.6),
+    0 10px 30px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 30px 80px rgba(0, 0, 0, 0.6);
+  --shadow-ring: 0 0 0 2px rgba(255, 255, 255, 0.04);
+
+  /* Breakpoints — derived from the design's responsive thresholds */
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 640px;
+  --breakpoint-lg: 720px;
+  --breakpoint-xl: 1100px;
+  --breakpoint-2xl: 1180px;
+}
+
+/* ------------------------------------------------------------------ */
+/* 3. Base layer — app background + typography defaults                */
+/* ------------------------------------------------------------------ */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    letter-spacing: var(--tracking-normal);
+    color: var(--bf-text);
+    background: #1a1817;
+    background-image: radial-gradient(
+      ellipse at top,
+      #2a1f1c 0%,
+      #1a1817 30%,
+      #0d0c0b 60%,
+      #0a0a0a 100%
+    );
+    min-height: 100vh;
+  }
+
+  [data-theme='light'] body {
+    background: #e7e5e3;
+    background-image: radial-gradient(ellipse at top, #f5f1ed 0%, #e7e5e3 60%, #d4d0cc 100%);
+  }
+
+  /* Tabular numerics for metric/monospace readouts */
+  .mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+}

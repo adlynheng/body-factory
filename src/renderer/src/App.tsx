@@ -1,34 +1,16 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
-
 function App(): React.JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
-
   return (
-    <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
+    <div className="flex min-h-screen items-center justify-center p-6">
+      <div className="rounded-card border border-border-subtle bg-surface-card px-8 py-6 shadow-window">
+        <p className="text-2xs font-bold uppercase tracking-widest text-text-tertiary">Body Factory</p>
+        <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight text-text-primary">
+          Design system ready
+        </h1>
+        <p className="mt-2 text-sm text-text-tertiary">
+          Tokens, Tailwind, and the component structure are wired up. Views come next.
+        </p>
       </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
-        </div>
-      </div>
-      <Versions></Versions>
-    </>
+    </div>
   )
 }
 
