@@ -3,10 +3,13 @@ import { Badge } from '@renderer/components/ui/Badge'
 import { Button } from '@renderer/components/ui/Button'
 import { Card } from '@renderer/components/ui/Card'
 import { DatePicker } from '@renderer/components/ui/DatePicker'
+import { HRZoneBar } from '@renderer/components/ui/HRZoneBar'
 import { Icon, iconRegistry, type IconName } from '@renderer/components/ui/Icon'
+import { MetricCard, MetricCardGrid } from '@renderer/components/ui/MetricCard'
 import { SegControl } from '@renderer/components/ui/SegControl'
 import { Switch } from '@renderer/components/ui/Switch'
 import { Toolbar } from '@renderer/components/ui/Toolbar'
+import { Trendline } from '@renderer/components/ui/Trendline'
 
 /**
  * Primitive Gallery — a development-only surface for building and eyeballing
@@ -141,6 +144,79 @@ export function Gallery(): ReactNode {
                 <Card.Description>Hover me</Card.Description>
               </Card.Header>
             </Card>
+          </div>
+        </GallerySection>
+
+        <GallerySection title="MetricCard" caption="Icon badge · big mono value · plan + delta chip">
+          <div className="max-w-md" style={{ '--accent': 'var(--bf-run)' } as React.CSSProperties}>
+            <MetricCardGrid accent="var(--bf-run)">
+              <MetricCard
+                icon="distance"
+                label="Distance"
+                value="10.2"
+                unit="km"
+                planned="10.0 km"
+                delta={0.2}
+                deltaUnit="km"
+                precision={1}
+                positive="up"
+                hasActual
+              />
+              <MetricCard
+                icon="pace"
+                label="Avg Pace"
+                value="5:32"
+                unit="/km"
+                planned="5:37/km"
+                delta={-5}
+                deltaUnit="sec"
+                precision={0}
+                positive="down"
+                hasActual
+              />
+              <MetricCard
+                icon="heartRate"
+                label="Avg HR"
+                value={148}
+                unit="bpm"
+                planned="150 bpm"
+                delta={-2}
+                deltaUnit="bpm"
+                precision={0}
+                positive="down"
+                hasActual
+              />
+              <MetricCard
+                icon="time"
+                label="Time"
+                value="0:56:24"
+                planned="0:56:00"
+                hasActual={false}
+              />
+            </MetricCardGrid>
+          </div>
+        </GallerySection>
+
+        <GallerySection title="HRZoneBar" caption="Stacked time-in-zone + legend">
+          <div className="max-w-md">
+            <HRZoneBar zones={[10, 35, 45, 8, 2]} meta="Max 174 bpm · 45m gain" />
+          </div>
+        </GallerySection>
+
+        <GallerySection title="Trendline" caption="Bespoke SVG sparkline of recent sessions">
+          <div className="max-w-2xl" style={{ '--accent': 'var(--bf-run)' } as React.CSSProperties}>
+            <Trendline
+              title="Distance trend"
+              caption="last 6 sessions"
+              data={[
+                { label: 'Apr 20', value: 10.0 },
+                { label: 'Apr 27', value: 10.5 },
+                { label: 'May 4', value: 10.2 },
+                { label: 'May 11', value: 11.0 },
+                { label: 'May 18', value: 10.8 },
+                { label: 'May 27', value: 11.4 }
+              ]}
+            />
           </div>
         </GallerySection>
 
