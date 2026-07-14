@@ -1,0 +1,78 @@
+/* datepicker.css — restyles react-calendar (the popup) to our tokens.
+ *
+ * The trigger is our own Radix Popover button (styled inline with Tailwind
+ * tokens); this file only themes react-calendar's popup, whose third-party
+ * class names can't be tokenized through Tailwind. Keyed to the same --bf-*
+ * runtime vars so the calendar follows [data-theme] switching automatically. */
+
+/* ── Calendar popup ──────────────────────────────────────────── */
+.react-calendar {
+  width: 260px;
+  max-width: 100%;
+  margin-top: 6px;
+  padding: 8px;
+  border: 1px solid var(--bf-border);
+  border-radius: 12px;
+  background: var(--bf-bg-card);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  font-family: var(--font);
+  line-height: 1.4;
+}
+
+.react-calendar__navigation {
+  height: 32px;
+  margin-bottom: 4px;
+}
+.react-calendar__navigation button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  border-radius: 8px;
+  color: var(--bf-text);
+  font-weight: 600;
+  font-size: 13px;
+}
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background: var(--bf-bg-hover);
+}
+.react-calendar__navigation button:disabled {
+  color: var(--bf-text-4);
+}
+
+.react-calendar__month-view__weekdays {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bf-text-3);
+}
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none;
+}
+
+.react-calendar__tile {
+  padding: 8px 4px;
+  border-radius: 8px;
+  color: var(--bf-text);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background: var(--bf-bg-hover);
+}
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: var(--bf-text-4);
+}
+.react-calendar__tile--now {
+  background: var(--bf-bg-card-2);
+}
+.react-calendar__tile--active,
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  background: var(--accent);
+  color: #0a0a0a;
+  font-weight: 700;
+}

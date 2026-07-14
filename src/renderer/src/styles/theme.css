@@ -26,12 +26,13 @@
 :root {
   /* Theme-agnostic tokens — identical in light & dark. */
 
-  /* Activity accents — defaults from the design's "electric" palette.
-     The app may override --bf-run/gym/floorball/misc at runtime (palettes). */
-  --bf-run: #c8ff3a;
-  --bf-gym: #ff6b2c;
-  --bf-floorball: #4e8fff;
-  --bf-misc: #c56be8;
+  /* Activity accents — defaults from the design's "muted athletic" palette
+     (the prototype's TWEAK_DEFAULTS). The app may override
+     --bf-run/gym/floorball/misc at runtime (palette switcher). */
+  --bf-run: #a3e635;
+  --bf-gym: #f97316;
+  --bf-floorball: #3b82f6;
+  --bf-misc: #a855f7;
   /* Contextual accent — components set --accent in local scope (e.g. per
      session type); utilities like bg-accent/text-accent follow it. */
   --accent: var(--bf-run);

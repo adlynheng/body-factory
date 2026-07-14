@@ -1,5 +1,12 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
+import { Badge } from '@renderer/components/ui/Badge'
+import { Button } from '@renderer/components/ui/Button'
+import { Card } from '@renderer/components/ui/Card'
+import { DatePicker } from '@renderer/components/ui/DatePicker'
 import { Icon, iconRegistry, type IconName } from '@renderer/components/ui/Icon'
+import { SegControl } from '@renderer/components/ui/SegControl'
+import { Switch } from '@renderer/components/ui/Switch'
+import { Toolbar } from '@renderer/components/ui/Toolbar'
 
 /**
  * Primitive Gallery — a development-only surface for building and eyeballing
@@ -23,6 +30,124 @@ export function Gallery(): ReactNode {
       </header>
 
       <main className="mx-auto max-w-5xl space-y-12">
+        <GallerySection title="Button" caption="variant × size — size='icon' folds in IconButton">
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <Button variant="solid">Solid</Button>
+              <Button variant="soft">Soft</Button>
+              <Button variant="outline">Outline</Button>
+              <Button variant="ghost">Ghost</Button>
+              <Button variant="danger">Danger</Button>
+              <Button variant="soft" disabled>
+                Disabled
+              </Button>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button size="sm" variant="solid">
+                Small
+              </Button>
+              <Button size="md" variant="solid">
+                Medium
+              </Button>
+              <Button size="lg" variant="solid">
+                Large
+              </Button>
+              <Button size="icon" variant="soft" aria-label="Add session">
+                <Icon name="add" />
+              </Button>
+              <Button size="icon" variant="ghost" aria-label="More">
+                <Icon name="more" />
+              </Button>
+              <Button variant="soft">
+                <Icon name="calendar" />
+                With icon
+              </Button>
+            </div>
+          </div>
+        </GallerySection>
+
+        <GallerySection title="Toolbar" caption="Radix roving focus (arrow keys) — items are our Button">
+          <Toolbar.Root
+            aria-label="Formatting"
+            className="w-fit rounded-lg border border-border-subtle bg-surface-card p-1"
+          >
+            <Toolbar.Button size="icon" variant="ghost" aria-label="Previous">
+              <Icon name="caretLeft" />
+            </Toolbar.Button>
+            <Toolbar.Button size="icon" variant="ghost" aria-label="Next">
+              <Icon name="caretRight" />
+            </Toolbar.Button>
+            <Toolbar.Separator />
+            <Toolbar.Button size="sm" variant="ghost">
+              Today
+            </Toolbar.Button>
+            <Toolbar.Separator />
+            <Toolbar.Button size="icon" variant="ghost" aria-label="Add">
+              <Icon name="add" />
+            </Toolbar.Button>
+          </Toolbar.Root>
+        </GallerySection>
+
+        <GallerySection title="Badge" caption="Unified status + delta chips — tone × shape">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge tone="neutral">Neutral</Badge>
+            <Badge tone="accent">Accent</Badge>
+            <Badge tone="success">
+              <Icon name="arrowUp" />
+              12%
+            </Badge>
+            <Badge tone="danger">
+              <Icon name="arrowDown" />
+              4%
+            </Badge>
+            <Badge tone="run">Run</Badge>
+            <Badge tone="gym">Gym</Badge>
+            <Badge tone="floorball">Floorball</Badge>
+            <Badge tone="misc">Misc</Badge>
+            <Badge tone="accent" shape="pill">
+              Pill
+            </Badge>
+          </div>
+        </GallerySection>
+
+        <GallerySection title="Card" caption="Compound: Card.Header / Title / Content / Footer">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-gutter">
+            <Card>
+              <Card.Header>
+                <Card.Title>Default card</Card.Title>
+                <Card.Description>Header, content, footer</Card.Description>
+              </Card.Header>
+              <Card.Content>
+                <p className="text-sm text-text-secondary">Body content sits here.</p>
+              </Card.Content>
+              <Card.Footer>
+                <Button size="sm" variant="solid">
+                  Action
+                </Button>
+              </Card.Footer>
+            </Card>
+            <Card variant="raised">
+              <Card.Header>
+                <Card.Title>Raised</Card.Title>
+                <Card.Description>surface-raised background</Card.Description>
+              </Card.Header>
+              <Card.Content>
+                <Badge tone="accent">Tag</Badge>
+              </Card.Content>
+            </Card>
+            <Card interactive>
+              <Card.Header>
+                <Card.Title>Interactive</Card.Title>
+                <Card.Description>Hover me</Card.Description>
+              </Card.Header>
+            </Card>
+          </div>
+        </GallerySection>
+
+        <GallerySection title="Form controls" caption="Switch · SegControl · DatePicker — Radix behavior, our tokens">
+          <FormControlsDemo />
+        </GallerySection>
+
         <GallerySection title="Icons" caption="Semantic registry — referenced by role, not glyph">
           <div className="grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-gutter">
             {(Object.keys(iconRegistry) as IconName[]).map((name) => (
@@ -37,6 +162,56 @@ export function Gallery(): ReactNode {
           </div>
         </GallerySection>
       </main>
+    </div>
+  )
+}
+
+function FormControlsDemo(): ReactNode {
+  const [on, setOn] = useState(true)
+  const [units, setUnits] = useState('km')
+  const [view, setView] = useState('month')
+  const [date, setDate] = useState<Date | null>(new Date(2026, 4, 27))
+
+  return (
+    <div className="flex flex-wrap items-start gap-x-10 gap-y-6">
+      <div className="flex flex-col gap-2">
+        <span className="text-xs text-text-tertiary">Switch</span>
+        <div className="flex items-center gap-3">
+          <Switch checked={on} onCheckedChange={setOn} aria-label="Toggle" />
+          <Switch checked={false} disabled aria-label="Disabled toggle" />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="text-xs text-text-tertiary">SegControl</span>
+        <div className="flex flex-col items-start gap-2">
+          <SegControl
+            value={units}
+            onValueChange={setUnits}
+            aria-label="Distance units"
+            options={[
+              { value: 'km', label: 'Kilometers' },
+              { value: 'mi', label: 'Miles' }
+            ]}
+          />
+          <SegControl
+            value={view}
+            onValueChange={setView}
+            aria-label="Default view"
+            options={[
+              { value: 'month', label: 'Month' },
+              { value: 'week', label: 'Week' }
+            ]}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="text-xs text-text-tertiary">DatePicker</span>
+        <div className="w-52">
+          <DatePicker value={date} onChange={setDate} />
+        </div>
+      </div>
     </div>
   )
 }
