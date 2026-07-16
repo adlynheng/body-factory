@@ -1,0 +1,28 @@
+/* EditableText — inline contentEditable affordance, keyed to --bf-* tokens.
+   Placeholder is rendered via ::before when empty and unfocused (design's
+   `.is-empty:not(:focus)::before` with `content: attr(data-placeholder)`). */
+
+.bf-editable {
+  outline: none;
+  cursor: text;
+  border-radius: 8px;
+  padding: 2px 6px;
+  transition:
+    background 0.12s,
+    box-shadow 0.12s;
+}
+
+.bf-editable:hover {
+  background: var(--bf-bg-card);
+}
+
+.bf-editable:focus {
+  background: var(--bf-bg-card);
+  box-shadow: 0 0 0 1px var(--bf-border-strong);
+}
+
+.bf-editable[data-empty]:not(:focus)::before {
+  content: attr(data-placeholder);
+  color: var(--bf-text-4);
+  pointer-events: none;
+}

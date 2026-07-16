@@ -1,5 +1,4 @@
 import { cva, type VariantProps } from 'class-variance-authority'
-import { Slot } from 'radix-ui'
 import { forwardRef, type ButtonHTMLAttributes } from 'react'
 import { cn } from '@renderer/lib/utils'
 
@@ -39,26 +38,22 @@ export const buttonVariants = cva(
 
 export interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  /**
-   * Render as the child element instead of a `<button>`, merging styling/props
-   * onto it. Enables composition — e.g. `<Toolbar.Button asChild><Button/>` or
-   * `<Button asChild><a/>` — without nesting two interactive elements.
-   */
-  asChild?: boolean
-}
+    VariantProps<typeof buttonVariants> {}
 
+/**
+ * Styled button. Plain `<button>` — for composition (toolbar rows, popover /
+ * dialog triggers) pass it to a Base UI part's `render` prop, e.g.
+ * `<Toolbar.Button render={<Button variant="ghost" />} />`. Base UI merges its
+ * behavior/props (className, data-state, handlers, ref) onto this element.
+ */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { className, variant, size, asChild, type, ...props },
+  { className, variant, size, type, ...props },
   ref
 ) {
-  const Comp = asChild ? Slot.Root : 'button'
   return (
-    <Comp
+    <button
       ref={ref}
-      // A real <button> defaults to type=button (never submit); a slotted child
-      // owns its own element, so don't force a type onto it.
-      type={asChild ? type : (type ?? 'button')}
+      type={type ?? 'button'}
       className={cn(buttonVariants({ variant, size }), className)}
       {...props}
     />

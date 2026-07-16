@@ -1,7 +1,7 @@
 import 'react-calendar/dist/Calendar.css'
 import './datepicker.css'
 
-import { Popover } from 'radix-ui'
+import { Popover } from '@base-ui-components/react/popover'
 import Calendar from 'react-calendar'
 import { useState, type ReactNode } from 'react'
 import { Icon } from '@renderer/components/ui/Icon'
@@ -34,7 +34,7 @@ function formatTriggerDate(d: Date): string {
 }
 
 /**
- * Date field — a Radix `Popover` trigger (the design's read-only formatted
+ * Date field — a Base UI `Popover` trigger (the design's read-only formatted
  * button) over a `react-calendar` month grid. react-date-picker's editable
  * day/month/year spinners can't reproduce the design's weekday string trigger,
  * so the popover owns positioning/dismiss and we render the trigger ourselves.
@@ -53,42 +53,41 @@ export function DatePicker({
   const [open, setOpen] = useState(false)
 
   return (
-    <Popover.Root open={open} onOpenChange={setOpen}>
-      <Popover.Trigger asChild>
-        <button
-          type="button"
-          disabled={disabled}
-          aria-label={ariaLabel}
-          className={cn(
-            'flex cursor-pointer items-center gap-2.5 rounded-[7px] border border-border-subtle bg-surface-raised px-2.5 py-1.5 text-[12.5px] font-semibold text-text-primary',
-            'hover:bg-surface-hover',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60',
-            'disabled:cursor-not-allowed disabled:opacity-40',
-            className
-          )}
-        >
-          <span>{value ? formatTriggerDate(value) : 'Select date'}</span>
-          <span className="inline-flex text-[15px] text-text-secondary">
-            <Icon name="calendar" />
-          </span>
-        </button>
+    <Popover.Root open={open} onOpenChange={(next) => setOpen(next)}>
+      <Popover.Trigger
+        disabled={disabled}
+        aria-label={ariaLabel}
+        className={cn(
+          'flex cursor-pointer items-center gap-2.5 rounded-[7px] border border-border-subtle bg-surface-raised px-2.5 py-1.5 text-[12.5px] font-semibold text-text-primary',
+          'hover:bg-surface-hover',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60',
+          'disabled:cursor-not-allowed disabled:opacity-40',
+          className
+        )}
+      >
+        <span>{value ? formatTriggerDate(value) : 'Select date'}</span>
+        <span className="inline-flex text-[15px] text-text-secondary">
+          <Icon name="calendar" />
+        </span>
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Content align={align} sideOffset={0} className="z-[60] outline-none">
-          <Calendar
-            value={value}
-            onChange={(v) => {
-              onChange(v as Date | null)
-              setOpen(false)
-            }}
-            minDate={minDate}
-            maxDate={maxDate}
-            prevLabel={<Icon name="caretLeft" />}
-            nextLabel={<Icon name="caretRight" />}
-            prev2Label={null}
-            next2Label={null}
-          />
-        </Popover.Content>
+        <Popover.Positioner side="bottom" align={align} sideOffset={0}>
+          <Popover.Popup className="z-[60] origin-[var(--transform-origin)] outline-none">
+            <Calendar
+              value={value}
+              onChange={(v) => {
+                onChange(v as Date | null)
+                setOpen(false)
+              }}
+              minDate={minDate}
+              maxDate={maxDate}
+              prevLabel={<Icon name="caretLeft" />}
+              nextLabel={<Icon name="caretRight" />}
+              prev2Label={null}
+              next2Label={null}
+            />
+          </Popover.Popup>
+        </Popover.Positioner>
       </Popover.Portal>
     </Popover.Root>
   )

@@ -6,10 +6,21 @@ import icon from '../../resources/icon.png?asset'
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1100,
+    height: 760,
+    minWidth: 720,
+    minHeight: 560,
     show: false,
     autoHideMenuBar: true,
+    // Match the dark window surface so there's no white flash before paint.
+    backgroundColor: '#171717',
+    // macOS: hide the native title bar but keep the traffic lights, inset into
+    // our own title bar strip. The renderer's <Titlebar> draws the rest of the
+    // chrome (logo/title/meta/controls) into this region. `trafficLightPosition`
+    // vertically centers the lights in our 40px (h-10) bar.
+    ...(process.platform === 'darwin'
+      ? ({ titleBarStyle: 'hiddenInset', trafficLightPosition: { x: 12, y: 14 } } as const)
+      : {}),
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),

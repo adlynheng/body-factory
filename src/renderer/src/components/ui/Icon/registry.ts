@@ -26,6 +26,7 @@ import {
   LinkSimpleIcon,
   MagnifyingGlassIcon,
   MapPinIcon,
+  MinusIcon,
   MoonIcon,
   MountainsIcon,
   NoteIcon,
@@ -89,6 +90,7 @@ export const iconRegistry = {
 
   // UI chrome
   add: PlusIcon,
+  minus: MinusIcon,
   close: XIcon,
   check: CheckIcon,
   edit: PencilIcon,
