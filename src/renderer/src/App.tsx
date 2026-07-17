@@ -72,6 +72,7 @@ function App(): React.JSX.Element {
   // Dev surface: the primitive gallery is still reachable at #gallery.
   const isGallery = typeof window !== 'undefined' && window.location.hash === '#gallery'
   return <IconProvider>{isGallery ? <Gallery /> : <MainApp />}</IconProvider>
+  // return <IconProvider><Gallery /></IconProvider>
 }
 
 export default App

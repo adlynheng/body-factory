@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { SESSION_TYPES, sessionLabel, TODAY, type Session } from '@renderer/features/sessions'
 import { DAY_NAMES, isoDate, parseISO, sameDay } from '@renderer/lib/date'
 import { cn } from '@renderer/lib/utils'
@@ -20,22 +20,27 @@ export function WeekStrip({ days, sessionsByDate, onOpenSession }: WeekStripProp
       {days.map((d) => {
         const daySessions = sessionsByDate[isoDate(d)] ?? []
         const isToday = sameDay(d, TODAY)
+        const isPast = !isToday && d < TODAY
         return (
           <div
             key={isoDate(d)}
             className={cn(
-              'flex flex-col rounded-xl border p-2',
-              isToday ? 'border-accent/40 bg-accent/[0.06]' : 'border-border-subtle bg-surface-card'
+              'flex min-h-[118px] flex-col gap-2 rounded-[13px] border px-2 py-2.5',
+              isToday
+                ? 'border-accent/50 bg-surface-card ring-[1.5px] ring-accent/40'
+                : isPast
+                  ? 'border-border-subtle bg-surface-raised'
+                  : 'border-border-subtle bg-surface-card'
             )}
           >
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-2xs font-bold uppercase tracking-wide text-text-tertiary">
+            <div className="flex items-baseline justify-between">
+              <span className="text-[10px] font-bold uppercase tracking-wide text-text-tertiary">
                 {DAY_NAMES[(d.getDay() + 6) % 7]}
               </span>
               <span
                 className={cn(
-                  'mono text-sm font-bold',
-                  isToday ? 'text-accent' : 'text-text-secondary'
+                  'text-[15px] font-mono font-bold',
+                  isToday ? 'text-text-primary' : 'text-text-secondary'
                 )}
               >
                 {d.getDate()}
@@ -43,9 +48,7 @@ export function WeekStrip({ days, sessionsByDate, onOpenSession }: WeekStripProp
             </div>
             <div className="flex flex-col gap-1">
               {daySessions.length === 0 ? (
-                <div className="rounded-md py-2 text-center text-2xs font-medium text-text-muted">
-                  Rest
-                </div>
+                <div className="px-0.5 py-1 text-[10.5px] font-semibold text-text-muted">Rest</div>
               ) : (
                 daySessions.map((s) => {
                   const t = SESSION_TYPES[s.type]
@@ -57,22 +60,23 @@ export function WeekStrip({ days, sessionsByDate, onOpenSession }: WeekStripProp
                       type="button"
                       onClick={() => onOpenSession?.(s.id)}
                       title={sessionLabel(s)}
+                      style={{ '--dot': t.color } as CSSProperties}
                       className={cn(
-                        'flex items-center gap-1 rounded-md px-1.5 py-1 text-left transition-colors hover:bg-surface-hover',
+                        'flex w-full items-center gap-[5px] rounded-[7px] px-[7px] py-[5px] text-left transition-colors',
+                        'bg-[color-mix(in_oklab,var(--dot)_14%,transparent)] hover:bg-[color-mix(in_oklab,var(--dot)_22%,transparent)]',
                         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60',
-                        missed && 'opacity-60'
+                        missed && 'opacity-[0.68]'
                       )}
                     >
                       <span
-                        className="h-3 w-0.5 shrink-0 rounded-full"
-                        style={{ background: t.color }}
+                        className="h-[11px] w-[3px] shrink-0 rounded-[2px] bg-[var(--dot)]"
                         aria-hidden="true"
                       />
-                      <span className="flex-1 truncate text-2xs font-semibold text-text-secondary">
+                      <span className="flex-1 truncate text-[10.5px] font-bold text-text-primary">
                         {t.label}
                       </span>
-                      {done && <span className="text-2xs text-success">✓</span>}
-                      {missed && <span className="text-2xs text-danger">✕</span>}
+                      {done && <span className="text-[10px] font-extrabold text-success">✓</span>}
+                      {missed && <span className="text-[9px] font-extrabold text-danger">✕</span>}
                     </button>
                   )
                 })

@@ -97,17 +97,17 @@ export function Overview({
   const restFlagged = restNudgesEnabled && restStreak >= restThreshold
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 p-8">
+    <div className="flex flex-col gap-[18px] px-7 pb-8 pt-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <div className="text-2xs font-bold uppercase tracking-widest text-text-tertiary">
+          <div className="mb-[5px] text-[11px] font-bold uppercase tracking-widest text-text-tertiary">
             Week Overview · Wk {weekNum(wkStart)}
           </div>
-          <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight text-text-primary">
+          <h1 className="font-display text-[32px] font-extrabold leading-none tracking-tight text-text-primary">
             {weekRangeLabel(days)}
           </h1>
-          <div className="mt-1 text-sm text-text-secondary">
+          <div className="mt-[5px] whitespace-nowrap text-[13px] font-medium text-text-tertiary">
             {DAY_NAMES_LONG[(TODAY.getDay() + 6) % 7]}, {MONTH_NAMES[TODAY.getMonth()]}{' '}
             {TODAY.getDate()} · Day {dayIndex + 1} of 7
           </div>
@@ -120,6 +120,7 @@ export function Overview({
 
       {fitnessInboxCount > 0 && (
         <Banner
+          tone="success"
           icon="health"
           count={fitnessInboxCount}
           title="New from Apple Fitness"
@@ -136,19 +137,20 @@ export function Overview({
       )}
 
       {/* Progress hero */}
-      <section className="rounded-card border border-border-subtle bg-surface-card p-pad">
-        <div className="flex items-end justify-between gap-4">
-          <div className="flex items-baseline gap-2.5">
-            <span className="mono text-4xl font-extrabold tracking-tight text-text-primary">
+      <section className="flex flex-col gap-4 rounded-card border border-border-subtle bg-surface-card px-[22px] py-5">
+        <div className="flex items-end justify-between gap-3">
+          <div className="flex flex-col gap-[3px]">
+            <span className="mono flex items-baseline gap-2 text-[34px] font-extrabold leading-none tracking-tight text-text-primary">
               {completed.length}
-              <span className="text-2xl text-text-tertiary"> / {thisWeek.length}</span>
+              <span className="text-[18px] font-bold text-text-muted">/ {thisWeek.length}</span>
             </span>
-            <span className="pb-1 text-sm text-text-secondary">sessions completed this week</span>
+            <span className="text-[12.5px] font-medium text-text-tertiary">
+              sessions completed this week
+            </span>
           </div>
-          <div className="mono text-2xl font-bold text-accent">{pct}%</div>
+          <div className="mono text-2xl font-extrabold tracking-tight text-success">{pct}%</div>
         </div>
         <SegmentBar
-          className="mt-3"
           aria-label={`Week progress: ${completed.length} done, ${missed.length} missed, ${toGo.length} to go`}
           segments={[
             { value: completed.length, tone: 'success', title: `${completed.length} completed` },
@@ -156,13 +158,13 @@ export function Overview({
             { value: toGo.length, tone: 'neutral', title: `${toGo.length} to go` }
           ]}
         />
-        <div className="mt-3 flex items-center justify-between text-xs">
-          <span className="flex items-center gap-1.5 font-medium text-text-secondary">
-            <Icon name="calories" className="text-success" />
+        <div className="flex items-center gap-[18px] text-[13px]">
+          <span className="flex items-center gap-[7px] font-semibold text-text-tertiary">
+            <Icon name="calories" className="text-[#f26a2e]" />
             Best streak: {bestStreak} {bestStreak === 1 ? 'day' : 'days'}
           </span>
-          <span className="flex items-center gap-1.5 font-medium text-text-tertiary">
-            <Icon name="close" />
+          <span className="flex items-center gap-[7px] font-medium text-text-muted">
+            <Icon name="close" className="text-danger" />
             {missed.length} missed
           </span>
         </div>
@@ -171,7 +173,7 @@ export function Overview({
       <WeekStrip days={days} sessionsByDate={sessionsByDate} onOpenSession={onOpenSession} />
 
       {/* Today + Coming up */}
-      <div className="grid grid-cols-2 gap-gutter">
+      <div className="grid grid-cols-2 gap-3.5">
         <Card>
           <Card.Header className="flex-row items-center justify-between">
             <Card.Title>Today</Card.Title>
@@ -179,9 +181,11 @@ export function Overview({
               {MONTH_NAMES[TODAY.getMonth()].slice(0, 3)} {TODAY.getDate()}
             </span>
           </Card.Header>
-          <Card.Content className="flex flex-col gap-2">
+          <Card.Content className="flex flex-col gap-[3px]">
             {todaySessions.length === 0 ? (
-              <p className="text-sm text-text-tertiary">Rest day — nothing scheduled.</p>
+              <p className="px-0.5 py-3.5 text-[12.5px] text-text-tertiary">
+                Rest day — nothing scheduled.
+              </p>
             ) : (
               todaySessions.map((s) => (
                 <SessionRow
@@ -200,9 +204,9 @@ export function Overview({
             <Card.Title>Coming up</Card.Title>
             <span className="mono text-xs text-text-tertiary">{upcoming.length} left</span>
           </Card.Header>
-          <Card.Content className="flex flex-col gap-2">
+          <Card.Content className="flex flex-col gap-[3px]">
             {upcoming.length === 0 ? (
-              <p className="text-sm text-text-tertiary">
+              <p className="px-0.5 py-3.5 text-[12.5px] text-text-tertiary">
                 Nothing left this week — you&apos;re all caught up.
               </p>
             ) : (

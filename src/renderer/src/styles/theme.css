@@ -64,27 +64,27 @@
 [data-theme='dark'] {
   color-scheme: dark;
 
-  /* Surfaces */
-  --bf-bg: #0f0f0f;
-  --bf-bg-window: #171717;
-  --bf-bg-sidebar: #1c1c1c;
-  --bf-bg-card: #232323;
-  --bf-bg-card-2: #2b2b2b;
-  --bf-bg-hover: #333333;
+  /* Surfaces — exact values from the design's tokens.css dark palette. */
+  --bf-bg: #1a1a1a;
+  --bf-bg-window: #242424;
+  --bf-bg-sidebar: #2a2a2a;
+  --bf-bg-card: #313131;
+  --bf-bg-card-2: #3a3a3a;
+  --bf-bg-hover: #454545;
 
   /* Borders */
-  --bf-border: #353535;
-  --bf-border-strong: #454545;
+  --bf-border: #4a4a4a;
+  --bf-border-strong: #5c5c5c;
 
   /* Text */
   --bf-text: #fafafa;
-  --bf-text-2: #a3a3a3;
-  --bf-text-3: #6b6b6b;
-  --bf-text-4: #404040;
+  --bf-text-2: #b8b8b8;
+  --bf-text-3: #8a8a8a;
+  --bf-text-4: #565656;
 
   /* Titlebar */
-  --bf-tb-bg: #1f1f1f;
-  --bf-tb-border: #383838;
+  --bf-tb-bg: #2d2d2d;
+  --bf-tb-border: #4a4a4a;
 }
 
 [data-theme='light'] {
@@ -173,10 +173,13 @@
 /* 2b. Static tokens — type scale, radii, shadows, breakpoints, etc.   */
 /* ------------------------------------------------------------------ */
 @theme {
-  /* Font families */
-  --font-sans: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-display: 'Inter Tight', 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Font families — self-hosted variable fonts (@fontsource-variable/*) register
+     the "… Variable" family names; list them first, then graceful fallbacks. */
+  --font-sans: 'Inter Tight Variable', 'Inter Variable', 'Inter Tight', 'Inter', -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  --font-display: 'Inter Tight Variable', 'Inter Tight', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'IBM Plex Mono', ui-monospace,
+    SFMono-Regular, Menlo, monospace;
 
   /* Font weights */
   --font-weight-normal: 400;

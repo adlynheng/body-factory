@@ -4,17 +4,34 @@ import { Icon, type IconName } from '@renderer/components/ui/Icon'
 import { cn } from '@renderer/lib/utils'
 
 export const bannerVariants = cva(
-  'group flex w-full items-center gap-3 rounded-card border px-pad py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60',
+  'group flex w-full items-center gap-3.5 rounded-2xl border px-4 py-3.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60',
   {
     variants: {
       tone: {
         accent: 'border-accent/25 bg-accent/10 hover:bg-accent/15',
+        // Design's Apple Fitness import banner — a soft success-green gradient.
+        success:
+          'border-success/40 bg-gradient-to-br from-success/[0.16] to-success/[0.05] shadow-[0_4px_18px_color-mix(in_oklab,var(--color-success)_12%,transparent)] hover:border-success/60',
         neutral: 'border-border-subtle bg-surface-raised hover:bg-surface-hover'
       }
     },
     defaultVariants: { tone: 'accent' }
   }
 )
+
+type BannerTone = NonNullable<VariantProps<typeof bannerVariants>['tone']>
+
+const iconToneClasses: Record<BannerTone, string> = {
+  accent: 'bg-accent/15 text-accent',
+  success: 'bg-success/25 text-success',
+  neutral: 'bg-surface-hover text-text-secondary'
+}
+
+const ctaToneClasses: Record<BannerTone, string> = {
+  accent: 'text-accent',
+  success: 'text-success',
+  neutral: 'text-text-secondary'
+}
 
 export interface BannerProps
   extends
@@ -40,7 +57,7 @@ export const Banner = forwardRef<HTMLButtonElement, BannerProps>(function Banner
   { className, tone, icon, count, title, description, cta, type, ...props },
   ref
 ) {
-  const accent = tone !== 'neutral'
+  const t: BannerTone = tone ?? 'accent'
   return (
     <button
       ref={ref}
@@ -51,31 +68,24 @@ export const Banner = forwardRef<HTMLButtonElement, BannerProps>(function Banner
       <span className="relative shrink-0">
         <span
           className={cn(
-            'flex size-9 items-center justify-center rounded-lg text-lg',
-            accent ? 'bg-accent/15 text-accent' : 'bg-surface-hover text-text-secondary'
+            'flex size-[42px] items-center justify-center rounded-xl text-xl',
+            iconToneClasses[t]
           )}
         >
           <Icon name={icon} />
         </span>
         {count != null && count > 0 && (
-          <span className="mono absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-2xs font-bold text-black">
+          <span className="mono absolute -right-1.5 -top-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-danger px-1 text-2xs font-extrabold text-white ring-2 ring-surface-card">
             {count}
           </span>
         )}
       </span>
       <span className="flex min-w-0 flex-col gap-0.5">
-        <span className="text-base font-semibold text-text-primary">{title}</span>
-        {description && <span className="text-sm text-text-secondary">{description}</span>}
+        <span className="text-base font-bold text-text-primary">{title}</span>
+        {description && <span className="text-sm text-text-tertiary">{description}</span>}
       </span>
       {cta && (
-        <span
-          className={cn(
-            'ml-auto shrink-0 text-sm font-semibold',
-            accent ? 'text-accent' : 'text-text-secondary'
-          )}
-        >
-          {cta}
-        </span>
+        <span className={cn('ml-auto shrink-0 text-sm font-bold', ctaToneClasses[t])}>{cta}</span>
       )}
     </button>
   )

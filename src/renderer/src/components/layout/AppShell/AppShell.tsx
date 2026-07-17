@@ -27,7 +27,9 @@ function AppShellRoot({ className, density, ...props }: AppShellProps): ReactNod
 }
 
 function AppShellBody({ className, ...props }: HTMLAttributes<HTMLDivElement>): ReactNode {
-  return <div className={cn('flex min-h-0 flex-1', className)} {...props} />
+  // Design's `.bf-windowbody` sits on `--bg` (surface); the Sidebar overrides
+  // with its own surface, and Main inherits this as the content background.
+  return <div className={cn('flex min-h-0 flex-1 bg-surface', className)} {...props} />
 }
 
 function AppShellMain({ className, ...props }: HTMLAttributes<HTMLElement>): ReactNode {

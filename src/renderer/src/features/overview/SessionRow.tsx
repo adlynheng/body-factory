@@ -30,21 +30,23 @@ export function SessionRow({ session, onOpen, showStatus, showDate }: SessionRow
       type="button"
       onClick={onOpen}
       className={cn(
-        'flex w-full items-center gap-3 rounded-lg border border-border-subtle bg-surface-card px-3 py-2.5 text-left transition-colors',
-        'hover:border-border-strong hover:bg-surface-hover',
+        'flex w-full items-center gap-[11px] rounded-[9px] bg-transparent p-2.5 text-left transition-colors',
+        'hover:bg-surface-hover',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60'
       )}
     >
       <span
-        className="h-8 w-1 shrink-0 rounded-full"
+        className="h-[30px] w-1 shrink-0 rounded-[3px]"
         style={{ background: t.color }}
         aria-hidden="true"
       />
-      <span className="flex min-w-0 flex-1 flex-col">
-        <span className="truncate text-base font-semibold text-text-primary">
+      <span className="flex min-w-0 flex-1 flex-col gap-px">
+        <span className="truncate text-[13.5px] font-semibold text-text-primary">
           {sessionLabel(session)}
         </span>
-        <span className="text-xs text-text-tertiary">{t.label}</span>
+        <span className="text-[10.5px] font-semibold uppercase tracking-wide text-text-tertiary">
+          {t.label}
+        </span>
       </span>
       {showDate && (
         <span className="mono shrink-0 text-xs text-text-tertiary">

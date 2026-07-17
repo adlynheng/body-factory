@@ -13,7 +13,7 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     // Match the dark window surface so there's no white flash before paint.
-    backgroundColor: '#171717',
+    backgroundColor: '#242424',
     // macOS: hide the native title bar but keep the traffic lights, inset into
     // our own title bar strip. The renderer's <Titlebar> draws the rest of the
     // chrome (logo/title/meta/controls) into this region. `trafficLightPosition`
