@@ -8,6 +8,7 @@ import { Icon, IconProvider, type IconName } from '@renderer/components/ui/Icon'
 import { TooltipProvider } from '@renderer/components/ui/Tooltip'
 import { INITIAL_SESSIONS } from '@renderer/features/sessions'
 import { Overview } from '@renderer/features/overview'
+import { Calendar } from '@renderer/features/calendar'
 import { Gallery } from '@renderer/dev/Gallery'
 
 type ScreenId = 'home' | 'calendar' | 'template' | 'trends' | 'settings'
@@ -22,6 +23,11 @@ const NAV: { id: ScreenId; label: string; icon: IconName }[] = [
 
 function MainApp(): React.JSX.Element {
   const [active, setActive] = useState<ScreenId>('home')
+  const [sessions, setSessions] = useState(INITIAL_SESSIONS)
+
+  const moveSession = (id: string, date: string): void => {
+    setSessions((prev) => prev.map((s) => (s.id === id ? { ...s, date } : s)))
+  }
 
   return (
     <TooltipProvider>
@@ -48,10 +54,12 @@ function MainApp(): React.JSX.Element {
           <AppShell.Main>
             {active === 'home' ? (
               <Overview
-                sessions={INITIAL_SESSIONS}
+                sessions={sessions}
                 fitnessInboxCount={3}
                 onNavCalendar={() => setActive('calendar')}
               />
+            ) : active === 'calendar' ? (
+              <Calendar sessions={sessions} onMoveSession={moveSession} />
             ) : (
               <div className="grid h-full place-items-center p-8">
                 <EmptyState
