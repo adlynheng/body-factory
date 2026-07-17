@@ -3,16 +3,7 @@ import { Button } from '@renderer/components/ui/Button'
 import { Icon, type IconName } from '@renderer/components/ui/Icon'
 import { Spinner } from '@renderer/components/ui/Spinner'
 import { cn } from '@renderer/lib/utils'
-
-/** Relative "last synced" label (design's `timeAgo`). */
-function timeAgo(date: Date | null): string {
-  if (!date) return 'never'
-  const sec = Math.max(0, Math.round((Date.now() - date.getTime()) / 1000))
-  if (sec < 60) return 'just now'
-  const min = Math.round(sec / 60)
-  if (min < 60) return `${min}m ago`
-  return `${Math.round(min / 60)}h ago`
-}
+import { timeAgo } from './timeAgo'
 
 export interface ConnectionCardProps {
   /** Glyph icon + its brand accent (integration-specific one-off colors). */

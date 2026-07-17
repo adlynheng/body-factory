@@ -13,7 +13,7 @@ function SidebarRoot({ className, ...props }: HTMLAttributes<HTMLElement>): Reac
   return (
     <aside
       className={cn(
-        'flex w-[220px] shrink-0 flex-col gap-4 overflow-y-auto border-r border-border-subtle bg-surface-sidebar p-3',
+        'flex w-[236px] shrink-0 flex-col gap-[22px] overflow-y-auto border-r border-border-subtle bg-surface-sidebar px-3.5 py-[18px]',
         className
       )}
       {...props}
@@ -22,14 +22,14 @@ function SidebarRoot({ className, ...props }: HTMLAttributes<HTMLElement>): Reac
 }
 
 function SidebarSection({ className, ...props }: HTMLAttributes<HTMLDivElement>): ReactNode {
-  return <div className={cn('flex flex-col gap-0.5', className)} {...props} />
+  return <div className={cn('flex flex-col gap-1', className)} {...props} />
 }
 
 function SidebarLabel({ className, ...props }: HTMLAttributes<HTMLDivElement>): ReactNode {
   return (
     <div
       className={cn(
-        'px-2.5 pb-1 text-2xs font-bold uppercase tracking-widest text-text-tertiary',
+        'px-2 pb-2 text-[10.5px] font-bold uppercase tracking-widest text-text-tertiary',
         className
       )}
       {...props}
@@ -56,7 +56,7 @@ function SidebarItem({
       type={type ?? 'button'}
       aria-current={active ? 'page' : undefined}
       className={cn(
-        'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors',
+        'flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13.5px] font-medium transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60',
         active
           ? 'bg-surface-hover text-text-primary'
@@ -76,7 +76,7 @@ function SidebarSpacer(): ReactNode {
 }
 
 function SidebarFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>): ReactNode {
-  return <div className={cn('flex flex-col gap-2', className)} {...props} />
+  return <div className={cn('flex flex-col gap-2.5', className)} {...props} />
 }
 
 export const Sidebar = Object.assign(SidebarRoot, {

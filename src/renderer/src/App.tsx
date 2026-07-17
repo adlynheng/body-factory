@@ -20,6 +20,8 @@ import { Overview } from '@renderer/features/overview'
 import { Calendar } from '@renderer/features/calendar'
 import {
   Settings,
+  SyncCard,
+  timeAgo,
   DEFAULT_SETTINGS,
   type AppSettings,
   type IntegrationState
@@ -136,6 +138,41 @@ function MainApp(): React.JSX.Element {
               ))}
             </Sidebar.Section>
             <Sidebar.Spacer />
+            <Sidebar.Footer>
+              <SyncCard
+                name="Apple Health"
+                connectTitle="Connect Apple Health"
+                offerText="Auto-sync runs, HR, and workouts from your iPhone."
+                icon="health"
+                iconColor="#ff6b8b"
+                iconSoft="rgba(255,60,96,0.12)"
+                connected={health.connected}
+                lastSyncedLabel={timeAgo(health.lastSynced)}
+                stats={[
+                  { value: '9', label: 'workouts' },
+                  { value: '142', label: 'bpm' },
+                  { value: '7,124', label: 'steps' }
+                ]}
+                onConnect={() => toggleIntegration(setHealth, true)}
+              />
+              <SyncCard
+                name="Evolt Active"
+                connectTitle="Connect Evolt Active"
+                offerText="Sync body composition from your Evolt 360 scans."
+                icon="evolt"
+                iconColor="#6be0c8"
+                iconSoft="rgba(107,224,200,0.14)"
+                connected={evolt.connected}
+                lastSyncedLabel={timeAgo(evolt.lastSynced)}
+                stats={[
+                  { value: '14.2', label: '% fat' },
+                  { value: '36.1', label: 'muscle' },
+                  { value: '72.4', label: 'kg' }
+                ]}
+                pulseColor="#6be0c8"
+                onConnect={() => toggleIntegration(setEvolt, true)}
+              />
+            </Sidebar.Footer>
           </Sidebar>
           <AppShell.Main>
             {active === 'home' ? (
