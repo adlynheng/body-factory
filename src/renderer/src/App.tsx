@@ -9,6 +9,12 @@ import { TooltipProvider } from '@renderer/components/ui/Tooltip'
 import { INITIAL_SESSIONS } from '@renderer/features/sessions'
 import { Overview } from '@renderer/features/overview'
 import { Calendar } from '@renderer/features/calendar'
+import {
+  ImportPicker,
+  seedFitnessInbox,
+  workoutToActual,
+  type FitnessWorkout
+} from '@renderer/features/import'
 import { Gallery } from '@renderer/dev/Gallery'
 
 type ScreenId = 'home' | 'calendar' | 'template' | 'trends' | 'settings'
@@ -24,9 +30,20 @@ const NAV: { id: ScreenId; label: string; icon: IconName }[] = [
 function MainApp(): React.JSX.Element {
   const [active, setActive] = useState<ScreenId>('home')
   const [sessions, setSessions] = useState(INITIAL_SESSIONS)
+  const [fitnessInbox, setFitnessInbox] = useState<FitnessWorkout[]>(seedFitnessInbox)
+  const [importOpen, setImportOpen] = useState(false)
 
   const moveSession = (id: string, date: string): void => {
     setSessions((prev) => prev.map((s) => (s.id === id ? { ...s, date } : s)))
+  }
+
+  const importToSession = (workout: FitnessWorkout, targetId: string): void => {
+    setSessions((prev) =>
+      prev.map((s) =>
+        s.id === targetId ? { ...s, actual: workoutToActual(workout, s.type), missed: false } : s
+      )
+    )
+    setFitnessInbox((prev) => prev.filter((w) => w.id !== workout.id))
   }
 
   return (
@@ -55,7 +72,8 @@ function MainApp(): React.JSX.Element {
             {active === 'home' ? (
               <Overview
                 sessions={sessions}
-                fitnessInboxCount={3}
+                fitnessInboxCount={fitnessInbox.length}
+                onOpenImport={() => setImportOpen(true)}
                 onNavCalendar={() => setActive('calendar')}
               />
             ) : active === 'calendar' ? (
@@ -72,6 +90,14 @@ function MainApp(): React.JSX.Element {
           </AppShell.Main>
         </AppShell.Body>
       </AppShell>
+
+      <ImportPicker
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        inbox={fitnessInbox}
+        sessions={sessions}
+        onImport={importToSession}
+      />
     </TooltipProvider>
   )
 }

@@ -4,14 +4,16 @@ import { Icon, type IconName } from '@renderer/components/ui/Icon'
 import { cn } from '@renderer/lib/utils'
 
 export const bannerVariants = cva(
-  'group flex w-full items-center gap-3.5 rounded-2xl border px-4 py-3.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60',
+  'group flex w-full items-center gap-3.5 rounded-2xl border px-4 py-3.5 text-left transition-[border-color,background-color,box-shadow,transform] active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60',
   {
     variants: {
       tone: {
         accent: 'border-accent/25 bg-accent/10 hover:bg-accent/15',
-        // Design's Apple Fitness import banner — a soft success-green gradient.
+        // Design's Apple Fitness import banner (`.bf-import-banner`): a fixed
+        // 135° green gradient over the card surface (not a corner gradient),
+        // faithful border/shadow, and a lift on hover.
         success:
-          'border-success/40 bg-gradient-to-br from-success/[0.16] to-success/[0.05] shadow-[0_4px_18px_color-mix(in_oklab,var(--color-success)_12%,transparent)] hover:border-success/60',
+          'border-[color-mix(in_oklab,var(--bf-success)_45%,var(--bf-border))] bg-[linear-gradient(135deg,color-mix(in_oklab,var(--bf-success)_22%,var(--bf-bg-card))_0%,color-mix(in_oklab,var(--bf-success)_8%,var(--bf-bg-card))_100%)] shadow-[0_4px_18px_color-mix(in_oklab,var(--bf-success)_12%,transparent)] hover:border-success hover:shadow-[0_6px_22px_color-mix(in_oklab,var(--bf-success)_20%,transparent)]',
         neutral: 'border-border-subtle bg-surface-raised hover:bg-surface-hover'
       }
     },
