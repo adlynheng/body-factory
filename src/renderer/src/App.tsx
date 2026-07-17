@@ -14,9 +14,16 @@ import {
   type NewSessionInput,
   type Session
 } from '@renderer/features/sessions'
-import { isoDate } from '@renderer/lib/date'
+import { isoDate, setWeekStartDay } from '@renderer/lib/date'
+import { setDistanceUnit } from '@renderer/lib/format'
 import { Overview } from '@renderer/features/overview'
 import { Calendar } from '@renderer/features/calendar'
+import {
+  Settings,
+  DEFAULT_SETTINGS,
+  type AppSettings,
+  type IntegrationState
+} from '@renderer/features/settings'
 import {
   ImportPicker,
   seedFitnessInbox,
@@ -41,9 +48,47 @@ function MainApp(): React.JSX.Element {
   const [fitnessInbox, setFitnessInbox] = useState<FitnessWorkout[]>(seedFitnessInbox)
   const [importOpen, setImportOpen] = useState(false)
   const [addingForDate, setAddingForDate] = useState<string | null>(null)
+  const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS)
+  const [health, setHealth] = useState<IntegrationState>(() => ({
+    connected: true,
+    lastSynced: new Date(Date.now() - 8 * 60_000),
+    syncing: false
+  }))
+  const [evolt, setEvolt] = useState<IntegrationState>({
+    connected: false,
+    lastSynced: null,
+    syncing: false
+  })
 
   const moveSession = (id: string, date: string): void => {
     setSessions((prev) => prev.map((s) => (s.id === id ? { ...s, date } : s)))
+  }
+
+  // Settings changes that also drive module-level app behavior are applied here,
+  // where the state lives: distance formatting + calendar week-start.
+  const changeSetting = <K extends keyof AppSettings>(key: K, value: AppSettings[K]): void => {
+    setSettings((prev) => ({ ...prev, [key]: value }))
+    if (key === 'units') setDistanceUnit(value as AppSettings['units'])
+    if (key === 'weekStart') setWeekStartDay(value === 'mon' ? 1 : 0)
+  }
+
+  // Mock a short sync: flip the spinner on, then stamp "last synced" after a beat.
+  const runSync = (set: typeof setHealth): void => {
+    set((p) => ({ ...p, syncing: true }))
+    window.setTimeout(() => set((p) => ({ ...p, syncing: false, lastSynced: new Date() })), 900)
+  }
+
+  const toggleIntegration = (set: typeof setHealth, next: boolean): void => {
+    set((p) => ({
+      ...p,
+      connected: next,
+      lastSynced: next ? (p.lastSynced ?? new Date()) : p.lastSynced
+    }))
+  }
+
+  const resetData = (): void => {
+    setSessions(INITIAL_SESSIONS)
+    setFitnessInbox(seedFitnessInbox())
   }
 
   const createSession = ({ type, subtype, date, title, description }: NewSessionInput): void => {
@@ -105,6 +150,19 @@ function MainApp(): React.JSX.Element {
                 sessions={sessions}
                 onMoveSession={moveSession}
                 onAddSession={setAddingForDate}
+              />
+            ) : active === 'settings' ? (
+              <Settings
+                settings={settings}
+                onChangeSetting={changeSetting}
+                health={health}
+                onToggleHealth={(next) => toggleIntegration(setHealth, next)}
+                onSyncHealth={() => runSync(setHealth)}
+                evolt={evolt}
+                onToggleEvolt={(next) => toggleIntegration(setEvolt, next)}
+                onSyncEvolt={() => runSync(setEvolt)}
+                sessions={sessions}
+                onResetData={resetData}
               />
             ) : (
               <div className="grid h-full place-items-center p-8">
