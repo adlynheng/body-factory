@@ -12,12 +12,14 @@ import {
   INITIAL_SESSIONS,
   TODAY,
   type NewSessionInput,
-  type Session
+  type Session,
+  type SessionTypeKey
 } from '@renderer/features/sessions'
-import { isoDate, setWeekStartDay } from '@renderer/lib/date'
+import { addDays, isoDate, parseISO, setWeekStartDay } from '@renderer/lib/date'
 import { setDistanceUnit } from '@renderer/lib/format'
 import { Overview } from '@renderer/features/overview'
 import { Calendar } from '@renderer/features/calendar'
+import { Template, INITIAL_TEMPLATE, type TemplateEntry } from '@renderer/features/template'
 import {
   Settings,
   SyncCard,
@@ -61,6 +63,56 @@ function MainApp(): React.JSX.Element {
     lastSynced: null,
     syncing: false
   })
+  const [template, setTemplate] = useState<TemplateEntry[]>(INITIAL_TEMPLATE)
+
+  const addTemplateEntry = (day: number, type: SessionTypeKey, subtype: string): void => {
+    setTemplate((prev) => [
+      ...prev,
+      { id: `t${Date.now()}${Math.random().toString(36).slice(2, 6)}`, day, type, subtype }
+    ])
+  }
+  const removeTemplateEntry = (id: string): void => {
+    setTemplate((prev) => prev.filter((e) => e.id !== id))
+  }
+  const moveTemplateEntry = (id: string, day: number): void => {
+    setTemplate((prev) => prev.map((e) => (e.id === id ? { ...e, day } : e)))
+  }
+
+  // Write the template across [start, end]: drop planned (incomplete) sessions
+  // in range, keep completed ones, then lay down one session per matching
+  // day-of-week. Jumps to the calendar so the result is visible.
+  const applyTemplate = (tmpl: TemplateEntry[], startISO: string, endISO: string): void => {
+    const start = parseISO(startISO)
+    const end = parseISO(endISO)
+    setSessions((prev) => {
+      const kept = prev.filter((s) => {
+        const d = parseISO(s.date)
+        const inRange = d >= start && d <= end
+        return !inRange || s.actual != null
+      })
+      const added: Session[] = []
+      let i = 0
+      for (let d = new Date(start); d <= end; d = addDays(d, 1)) {
+        const dayIdx = (d.getDay() + 6) % 7
+        for (const e of tmpl) {
+          if (e.day !== dayIdx) continue
+          added.push({
+            id: `s${Date.now()}-${i++}`,
+            date: isoDate(d),
+            type: e.type,
+            subtype: e.subtype,
+            title: '',
+            description: '',
+            planned: defaultPlanned(e.type),
+            actual: null,
+            notes: ''
+          })
+        }
+      }
+      return [...kept, ...added]
+    })
+    setActive('calendar')
+  }
 
   const moveSession = (id: string, date: string): void => {
     setSessions((prev) => prev.map((s) => (s.id === id ? { ...s, date } : s)))
@@ -187,6 +239,14 @@ function MainApp(): React.JSX.Element {
                 sessions={sessions}
                 onMoveSession={moveSession}
                 onAddSession={setAddingForDate}
+              />
+            ) : active === 'template' ? (
+              <Template
+                template={template}
+                onAddEntry={addTemplateEntry}
+                onRemoveEntry={removeTemplateEntry}
+                onMoveEntry={moveTemplateEntry}
+                onApply={applyTemplate}
               />
             ) : active === 'settings' ? (
               <Settings
