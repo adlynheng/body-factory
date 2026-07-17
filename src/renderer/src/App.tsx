@@ -6,7 +6,15 @@ import { Titlebar } from '@renderer/components/layout/Titlebar'
 import { EmptyState } from '@renderer/components/ui/EmptyState'
 import { Icon, IconProvider, type IconName } from '@renderer/components/ui/Icon'
 import { TooltipProvider } from '@renderer/components/ui/Tooltip'
-import { INITIAL_SESSIONS } from '@renderer/features/sessions'
+import {
+  AddSessionModal,
+  defaultPlanned,
+  INITIAL_SESSIONS,
+  TODAY,
+  type NewSessionInput,
+  type Session
+} from '@renderer/features/sessions'
+import { isoDate } from '@renderer/lib/date'
 import { Overview } from '@renderer/features/overview'
 import { Calendar } from '@renderer/features/calendar'
 import {
@@ -32,9 +40,25 @@ function MainApp(): React.JSX.Element {
   const [sessions, setSessions] = useState(INITIAL_SESSIONS)
   const [fitnessInbox, setFitnessInbox] = useState<FitnessWorkout[]>(seedFitnessInbox)
   const [importOpen, setImportOpen] = useState(false)
+  const [addingForDate, setAddingForDate] = useState<string | null>(null)
 
   const moveSession = (id: string, date: string): void => {
     setSessions((prev) => prev.map((s) => (s.id === id ? { ...s, date } : s)))
+  }
+
+  const createSession = ({ type, subtype, date, title, description }: NewSessionInput): void => {
+    const session: Session = {
+      id: `s${Date.now()}`,
+      date,
+      type,
+      subtype,
+      title: title.trim(),
+      description: description.trim(),
+      planned: defaultPlanned(type),
+      actual: null,
+      notes: ''
+    }
+    setSessions((prev) => [...prev, session])
   }
 
   const importToSession = (workout: FitnessWorkout, targetId: string): void => {
@@ -77,7 +101,11 @@ function MainApp(): React.JSX.Element {
                 onNavCalendar={() => setActive('calendar')}
               />
             ) : active === 'calendar' ? (
-              <Calendar sessions={sessions} onMoveSession={moveSession} />
+              <Calendar
+                sessions={sessions}
+                onMoveSession={moveSession}
+                onAddSession={setAddingForDate}
+              />
             ) : (
               <div className="grid h-full place-items-center p-8">
                 <EmptyState
@@ -97,6 +125,13 @@ function MainApp(): React.JSX.Element {
         inbox={fitnessInbox}
         sessions={sessions}
         onImport={importToSession}
+      />
+
+      <AddSessionModal
+        open={addingForDate != null}
+        onOpenChange={(o) => !o && setAddingForDate(null)}
+        date={addingForDate ?? isoDate(TODAY)}
+        onCreate={createSession}
       />
     </TooltipProvider>
   )

@@ -82,3 +82,10 @@ export const SESSION_TYPES: Record<SessionTypeKey, SessionTypeMeta> = {
 
 /** Display label for a session — its custom title, else the subtype. */
 export const sessionLabel = (s: Session): string => (s.title && s.title.trim()) || s.subtype
+
+/** Starter planned targets for a newly created session (design's `defaultPlanned`). */
+export const defaultPlanned = (type: SessionTypeKey): Planned => {
+  if (type === 'run') return { distance: 8, time: 45, pace: 337.5, avgBpm: 150 }
+  if (type === 'gym' || type === 'misc') return { duration: 60 }
+  return {}
+}

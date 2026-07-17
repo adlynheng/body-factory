@@ -12,6 +12,8 @@ export interface DatePickerProps {
   onChange: (value: Date | null) => void
   /** Popover edge to align to the trigger (design uses 'end' for the until-date). */
   align?: 'start' | 'end'
+  /** Side of the trigger to open on. Defaults to 'bottom'. */
+  side?: 'top' | 'bottom'
   minDate?: Date
   maxDate?: Date
   disabled?: boolean
@@ -44,6 +46,7 @@ export function DatePicker({
   value,
   onChange,
   align = 'start',
+  side = 'bottom',
   minDate,
   maxDate,
   disabled,
@@ -71,8 +74,11 @@ export function DatePicker({
         </span>
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Positioner side="bottom" align={align} sideOffset={0}>
-          <Popover.Popup className="z-[60] origin-[var(--transform-origin)] outline-none">
+        {/* z-index must live on the Positioner — it's the positioned element;
+            the Popup is `position: static`, so a z-index there is ignored and
+            the calendar would render behind a Dialog (z-50) it's used inside. */}
+        <Popover.Positioner side={side} align={align} sideOffset={6} className="z-[60]">
+          <Popover.Popup className="origin-[var(--transform-origin)] outline-none">
             <Calendar
               value={value}
               onChange={(v) => {

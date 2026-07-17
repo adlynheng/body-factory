@@ -1,4 +1,6 @@
-export { SESSION_TYPES, sessionLabel } from './types'
+export { SESSION_TYPES, sessionLabel, defaultPlanned } from './types'
 export type { Session, SessionTypeKey, SessionTypeMeta, Planned, Actual } from './types'
 export { INITIAL_SESSIONS, TODAY } from './mockData'
 export { consecutiveActiveDays, bestCompletedStreak } from './stats'
+export { AddSessionModal } from './AddSessionModal'
+export type { AddSessionModalProps, NewSessionInput } from './AddSessionModal'

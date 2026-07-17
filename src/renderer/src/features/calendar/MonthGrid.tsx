@@ -114,7 +114,7 @@ function DayCell({
           {...provided.droppableProps}
           onDoubleClick={() => onAddSession?.(iso)}
           className={cn(
-            'flex min-h-0 flex-col gap-1 overflow-hidden rounded-[10px] border p-2 transition-colors',
+            'flex min-h-0 flex-col gap-2 overflow-hidden rounded-[10px] border p-2 transition-colors',
             inMonth
               ? 'border-transparent bg-surface-card'
               : 'border-transparent bg-transparent opacity-45',

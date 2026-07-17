@@ -25,8 +25,9 @@ function groupByDate(sessions: Session[]): Record<string, Session[]> {
 }
 
 /**
- * WeekGrid — the calendar's week view (design's `.bf-week`): a vertical
- * week-number rail plus seven day columns. Empty days show a dashed "REST"
+ * WeekGrid — the calendar's week view (design's `.bf-week-wrap`): now shares the
+ * month grid's shape — a 22px week-number rail and a weekday-name header row,
+ * then a single row of seven day columns. Empty days show a dashed "REST"
  * add-target; days with sessions list detailed, draggable cards.
  */
 export function WeekGrid({
@@ -39,21 +40,31 @@ export function WeekGrid({
   const byDate = useMemo(() => groupByDate(sessions), [sessions])
 
   return (
-    <div className="grid min-h-0 flex-1 grid-cols-[34px_1fr] gap-1.5 overflow-hidden px-[22px] pb-[22px] pt-[18px]">
-      <div className="mono flex items-center justify-center rounded-[10px] border border-border-subtle bg-surface-card text-[11px] font-bold text-text-tertiary [text-orientation:mixed] [writing-mode:vertical-rl]">
-        WK {weekNum(days[0])}
+    <div className="grid min-h-0 flex-1 grid-cols-[22px_repeat(7,1fr)] grid-rows-[auto_1fr] gap-1 overflow-hidden px-[22px] pb-[22px]">
+      {/* Header row: week-number spacer + weekday labels */}
+      <div />
+      {days.map((d) => (
+        <div
+          key={isoDate(d)}
+          className="pb-2.5 pl-2.5 pt-3.5 text-[10.5px] font-bold uppercase tracking-[0.1em] text-text-tertiary"
+        >
+          {DAY_NAMES[(d.getDay() + 6) % 7]}
+        </div>
+      ))}
+
+      {/* Body row: week number + seven day columns */}
+      <div className="mono flex items-center justify-center rounded-lg text-[10.5px] font-bold text-text-tertiary">
+        {weekNum(days[0])}
       </div>
-      <div className="grid min-h-0 grid-cols-7 gap-1.5 overflow-hidden">
-        {days.map((d) => (
-          <WeekColumn
-            key={isoDate(d)}
-            date={d}
-            sessions={byDate[isoDate(d)] ?? []}
-            onOpenSession={onOpenSession}
-            onAddSession={onAddSession}
-          />
-        ))}
-      </div>
+      {days.map((d) => (
+        <WeekColumn
+          key={isoDate(d)}
+          date={d}
+          sessions={byDate[isoDate(d)] ?? []}
+          onOpenSession={onOpenSession}
+          onAddSession={onAddSession}
+        />
+      ))}
     </div>
   )
 }
@@ -76,25 +87,27 @@ function WeekColumn({ date, sessions, onOpenSession, onAddSession }: WeekColumnP
           ref={provided.innerRef}
           {...provided.droppableProps}
           className={cn(
-            'flex min-h-0 flex-col gap-2 overflow-hidden rounded-[10px] border p-2.5 transition-colors',
+            'flex min-h-0 flex-col gap-2 overflow-hidden rounded-[10px] border p-2 transition-colors',
             isToday
               ? 'border-run bg-[color-mix(in_oklab,var(--bf-run)_6%,var(--bf-bg-card))]'
-              : 'border-border-subtle bg-surface-card',
+              : 'border-transparent bg-surface-card',
             snapshot.isDraggingOver && 'border-dashed bg-surface-hover'
           )}
         >
-          <div className="flex items-baseline justify-between border-b border-border-subtle pb-2">
-            <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-text-tertiary">
-              {DAY_NAMES[(date.getDay() + 6) % 7]}
-            </span>
+          <div className="mb-0.5 flex items-center justify-between">
             <span
               className={cn(
-                'mono text-[22px] font-extrabold tracking-[-0.04em]',
-                isToday ? 'text-run' : 'text-text-primary'
+                'mono text-[12px] font-semibold',
+                isToday
+                  ? 'rounded-[5px] bg-run px-1.5 py-0.5 font-extrabold text-black'
+                  : 'text-text-secondary'
               )}
             >
               {date.getDate()}
             </span>
+            {isToday && (
+              <span className="text-[8.5px] font-extrabold tracking-[0.1em] text-run">TODAY</span>
+            )}
           </div>
 
           <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
