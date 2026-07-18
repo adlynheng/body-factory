@@ -37,6 +37,38 @@ function SidebarLabel({ className, ...props }: HTMLAttributes<HTMLDivElement>): 
   )
 }
 
+/**
+ * Shared styling for a nav row. Exported so router-aware callers can render the
+ * row as a `NavLink` (real anchor) with the same look as `Sidebar.Item`, without
+ * the Sidebar primitive itself depending on the router.
+ */
+export function sidebarItemClass(active?: boolean, className?: string): string {
+  return cn(
+    'flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13.5px] font-medium transition-colors',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60',
+    active
+      ? 'bg-surface-hover text-text-primary'
+      : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary',
+    className
+  )
+}
+
+/** Icon + label content shared by the button and link variants of a nav row. */
+export function SidebarItemContent({
+  icon,
+  label
+}: {
+  icon: IconName
+  label: ReactNode
+}): ReactNode {
+  return (
+    <>
+      <Icon name={icon} className="shrink-0 text-md" />
+      <span className="truncate">{label}</span>
+    </>
+  )
+}
+
 export interface SidebarItemProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon: IconName
   label: ReactNode
@@ -55,18 +87,10 @@ function SidebarItem({
     <button
       type={type ?? 'button'}
       aria-current={active ? 'page' : undefined}
-      className={cn(
-        'flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13.5px] font-medium transition-colors',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60',
-        active
-          ? 'bg-surface-hover text-text-primary'
-          : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary',
-        className
-      )}
+      className={sidebarItemClass(active, className)}
       {...props}
     >
-      <Icon name={icon} className="shrink-0 text-md" />
-      <span className="truncate">{label}</span>
+      <SidebarItemContent icon={icon} label={label} />
     </button>
   )
 }

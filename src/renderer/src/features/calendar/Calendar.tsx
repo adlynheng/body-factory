@@ -1,38 +1,44 @@
-import { useState, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { DragDropContext, type DropResult } from '@hello-pangea/dnd'
-import { TODAY, type Session } from '@renderer/features/sessions'
+import type { Session } from '@renderer/features/sessions'
+import type { CalendarView } from '@renderer/lib/calendarParams'
 import { CalendarHeader } from './CalendarHeader'
 import { MonthGrid } from './MonthGrid'
 import { WeekGrid } from './WeekGrid'
 
-export type CalendarView = 'month' | 'week'
+export type { CalendarView } from '@renderer/lib/calendarParams'
 
 export interface CalendarProps {
   sessions: Session[]
+  /** Active view — controlled by the route's `?view=` param. */
+  view: CalendarView
+  /** Period anchor — controlled by the route's `?month=`/`?week=` param. */
+  anchor: Date
+  onViewChange: (view: CalendarView) => void
+  onAnchorChange: (anchor: Date) => void
   /** Reschedule a session to a new ISO date (drag & drop). */
   onMoveSession?: (id: string, date: string) => void
   onOpenSession?: (id: string) => void
   onAddSession?: (date: string) => void
-  defaultView?: CalendarView
 }
 
 /**
- * Calendar — the month/week planning view (design's `CalendarView`). Owns the
- * period anchor and month/week toggle; a single `@hello-pangea/dnd`
- * `DragDropContext` spans whichever grid is active so a session can be dragged
- * from any day onto another. Pure over the `sessions` prop — mutations bubble
- * up via callbacks.
+ * Calendar — the month/week planning view (design's `CalendarView`). View and
+ * period anchor are controlled by the caller (the calendar route derives them
+ * from the URL), so the calendar itself is pure over its props. A single
+ * `@hello-pangea/dnd` `DragDropContext` spans whichever grid is active so a
+ * session can be dragged from any day onto another; mutations bubble up.
  */
 export function Calendar({
   sessions,
+  view,
+  anchor,
+  onViewChange,
+  onAnchorChange,
   onMoveSession,
   onOpenSession,
-  onAddSession,
-  defaultView = 'month'
+  onAddSession
 }: CalendarProps): ReactNode {
-  const [view, setView] = useState<CalendarView>(defaultView)
-  const [anchor, setAnchor] = useState<Date>(() => new Date(TODAY))
-
   const handleDragEnd = (result: DropResult): void => {
     const { draggableId, source, destination } = result
     if (!destination || destination.droppableId === source.droppableId) return
@@ -43,9 +49,9 @@ export function Calendar({
     <div className="flex h-full flex-col">
       <CalendarHeader
         anchor={anchor}
-        setAnchor={setAnchor}
+        setAnchor={onAnchorChange}
         view={view}
-        setView={setView}
+        setView={onViewChange}
         onAddSession={onAddSession}
       />
       <DragDropContext onDragEnd={handleDragEnd}>
